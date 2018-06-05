@@ -31,6 +31,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.MqttPingSender;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
 import android.app.Service;
@@ -118,7 +119,7 @@ class MqttConnection implements MqttCallbackExtended {
 	// our client object - instantiated on connect
 	private MqttAsyncClient myClient = null;
 
-	private AlarmPingSender alarmPingSender = null;
+	private MqttPingSender alarmPingSender = null;
 
 	// our (parent) service object
 	private MqttService service = null;
@@ -138,7 +139,7 @@ class MqttConnection implements MqttCallbackExtended {
 	private Map<IMqttDeliveryToken, String> savedActivityTokens = new HashMap<>();
 	private Map<IMqttDeliveryToken, String> savedInvocationContexts = new HashMap<>();
 
-	private WakeLock wakelock = null;
+//	private WakeLock wakelock = null;
 	private String wakeLockTag = null;
 
 	private DisconnectedBufferOptions bufferOpts = null;
@@ -285,7 +286,7 @@ class MqttConnection implements MqttCallbackExtended {
 			
 			// if myClient is null, then create a new connection
 			else {
-				alarmPingSender = new AlarmPingSender(service);
+				alarmPingSender = new AlarmNoWakelockPingSender(service);
 				myClient = new MqttAsyncClient(serverURI, clientId,
 						persistence, alarmPingSender);
 				myClient.setCallback(this);
@@ -945,13 +946,13 @@ class MqttConnection implements MqttCallbackExtended {
 	 * Acquires a partial wake lock for this client
 	 */
 	private void acquireWakeLock() {
-		if (wakelock == null) {
-			PowerManager pm = (PowerManager) service
-					.getSystemService(Service.POWER_SERVICE);
-			wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-					wakeLockTag);
-		}
-		wakelock.acquire();
+//		if (wakelock == null) {
+//			PowerManager pm = (PowerManager) service
+//					.getSystemService(Service.POWER_SERVICE);
+//			wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+//					wakeLockTag);
+//		}
+//		wakelock.acquire();
 
 	}
 
@@ -959,9 +960,9 @@ class MqttConnection implements MqttCallbackExtended {
 	 * Releases the currently held wake lock for this client
 	 */
 	private void releaseWakeLock() {
-		if(wakelock != null && wakelock.isHeld()){
-			wakelock.release();
-		}
+//		if(wakelock != null && wakelock.isHeld()){
+//			wakelock.release();
+//		}
 	}
 
 

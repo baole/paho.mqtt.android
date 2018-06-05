@@ -1,12 +1,14 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 16
         targetSdkVersion 26
 
         testApplicationId "org.eclipse.paho.android.service.test"
@@ -36,8 +38,9 @@ configurations {
 }
 
 dependencies {
-    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.clientVersion}"
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.clientVersion}"
+    implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    api fileTree(include: ['*.jar'], dir: 'libs')
 }
 
 android.libraryVariants.all { variant ->
@@ -116,6 +119,70 @@ publishing {
     }
 }
 
+//
+//
+//task generateSourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier 'sources'
+//}
+//
+//task generateJavadocs(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath()
+//            .join(File.pathSeparator))
+//}
+//
+//task generateJavadocsJar(type: Jar) {
+//    from generateJavadocs.destinationDir
+//    classifier 'javadoc'
+//}
+//
+//generateJavadocsJar.dependsOn generateJavadocs
+//
+//artifacts {
+//    archives generateJavadocsJar
+//    archives generateSourcesJar
+//}
+
+task writeNewPom {
+    pom {
+        project {
+            packaging 'aar'
+            name 'Paho'
+            url 'https://github.com/baole/paho.mqtt.android'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }.writeTo("$buildDir/poms/pom-default.xml")
+}
+
+
+
+bintray {
+    user = MQTT_USER
+    key = MQTT_BINTRAY_KEY
+    pkg {
+        repo = 'maven'
+        name = 'org.eclipse.paho'
+
+        version {
+            name = MQTT_VERSION
+            desc = 'disable wakelock for Mqtt'
+            released  = new Date()
+            vcsTag = MQTT_VERSION
+        }
+
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/baole/paho.mqtt.android.git'
+        websiteUrl = 'https://github.com/baole/paho.mqtt.android'
+    }
+    configurations = ['archives']
+}
 
 task debug << {
     configurations.compile.each { println it}
