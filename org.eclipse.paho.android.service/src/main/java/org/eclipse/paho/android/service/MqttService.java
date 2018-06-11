@@ -267,7 +267,7 @@ public class MqttService extends Service implements MqttTraceHandler {
    * @param status
    *            OK or Error
    * @param dataBundle
-   *            the data to be passed
+   *            the data to be passedmay
    */
   void callbackToActivity(String clientHandle, Status status,
       Bundle dataBundle) {

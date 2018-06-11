@@ -2,11 +2,12 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha15'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha17'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
@@ -23,10 +24,10 @@ ext{
     group = 'org.eclipse.paho'
 
     sampleArchivesBaseName = 'org.eclipse.paho.android.sample'
-    sampleVersion = '1.1.1.1'
+    sampleVersion = '1.1.1.2'
 
     serviceArchivesBaseName = 'org.eclipse.paho.android.service'
-    serviceVersion = '1.1.1.1'
+    serviceVersion = '1.1.1.2'
 
     clientVersion = '1.1.0'
 
@@ -59,6 +60,7 @@ println "SDK dir: $sdkDir"
 allprojects {
 
     repositories {
+        google()
         jcenter()
         mavenLocal()
 //        maven {
