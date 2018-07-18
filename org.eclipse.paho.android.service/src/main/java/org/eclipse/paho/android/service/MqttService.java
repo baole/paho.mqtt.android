@@ -837,6 +837,10 @@ public class MqttService extends Service implements MqttTraceHandler {
 	 * @return whether the android service can be regarded as online
 	 */
 	public boolean isOnline() {
+	    //TODO hack ignored online check for api 26 due to high ANR rates reported on Play store
+	    if (Build.VERSION.SDK_INT == 26) {
+	        return true;
+        }
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
       //noinspection RedundantIfStatement
